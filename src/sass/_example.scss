@@ -27,14 +27,16 @@
   background-position: center;
 }
 .loader {
-  color: #FFF;
+  color: gray;
   position: relative;
   font-size: 11px;
-  background: #FFF;
+  background: gray;
   animation: escaleY 1s infinite ease-in-out;
   width: 1em;
   height: 4em;
   animation-delay: -0.16s;
+  margin-left: 50px;
+  margin-top: 40px;
 }
 .loader:before,
 .loader:after {
@@ -42,7 +44,7 @@
   position: absolute;
   top: 0;
   left: 2em;
-  background: #FFF;
+  background: gray;
   width: 1em;
   height: 4em;
   animation: escaleY 1s infinite ease-in-out;
@@ -61,4 +63,14 @@
     box-shadow: 0 -2em;
     height: 5em;
   }
+}
+.cat {
+  width: 600px; 
+  height: 400px;
+  object-fit: cover;
+  margin-top: 100px;
+}
+
+.hidden {
+  display: none;
 }
