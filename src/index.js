@@ -1,56 +1,54 @@
 import Notiflix from 'notiflix';
 import { fetchBreeds, fetchCatByBreed } from "./cat-api"; 
+import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
 
 const select = document.querySelector('.breed-select');
 const catInfo = document.querySelector('.cat-info');
 const loader = document.querySelector('.loader');
 
-const addOption = (select, text) => {
-  const option = document.createElement('option');
-  option.textContent = text;
-  select.appendChild(option);
+loader.classList.replace('loader', 'is-hidden');
+catInfo.classList.add('is-hidden');
+
+let arrayBreeds = [];
+fetchBreeds()
+.then(data => {
+    data.forEach(element => {
+        arrayBreeds.push({text: element.name, value: element.id});
+    });
+    new SlimSelect({
+        select: select,
+        data: arrayBreeds
+    });
+    })
+.catch(onError);
+
+select.addEventListener('change', onSelectBreed);
+
+function onSelectBreed(event) {
+    catInfo.classList.add('is-hidden');
+    loader.classList.replace('is-hidden', 'loader');
+    select.classList.add('is-hidden');
+   
+
+    const breedId = event.currentTarget.value;
+    fetchCatByBreed(breedId)
+    .then(data => {
+        loader.classList.replace('loader', 'is-hidden');
+        select.classList.remove('is-hidden');
+        const { url, breeds } = data[0];
+        
+        catInfo.innerHTML = `<div class=""><img class="cat" src="${url}" alt="${breeds[0].name}" width="600"></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:</b> ${breeds[0].temperament}</p></div>`
+        catInfo.classList.remove('is-hidden');
+    })
+    .catch(onError);
 };
 
-const showLoader = () => loader.classList.remove('hidden');
-const hideLoader = () => loader.classList.add('hidden');
+function onError(error) {
+    select.classList.remove('is-hidden');
+    loader.classList.replace('loader', 'is-hidden');
 
-select.addEventListener('change', () => {
-  const selectedBreed = select.value;
-  showLoader();
-  catInfo.innerHTML = '';
+    Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page or select another cat breed!');
+};
+   
 
-  fetchCatByBreed(selectedBreed)
-    .then((catData) => {
-      hideLoader();
-      const image = document.createElement('img'); 
-      image.src = catData.imageUrl; 
-      image.alt = 'Cat'; 
-      image.classList.add('cat'); 
-      catInfo.appendChild(image);
-      const breed = document.createElement('p');
-      breed.textContent = `Breed: ${catData.breedName}`;
-      catInfo.appendChild(breed);
-      const description = document.createElement('p');
-      description.textContent = `Description: ${catData.description}`;
-      catInfo.appendChild(description);
-      const temperament = document.createElement('p');
-      temperament.textContent = `Temperament: ${catData.temperament}`;
-      catInfo.appendChild(temperament);
-    })
-    .catch(() => {
-      hideLoader();
-      Notiflix.Notify.failure('Not found');
-    });
-});
-
-fetchBreeds()
-  .then((breedsData) => {
-    breedsData.forEach((breed) => {
-      addOption(select, breed.name);
-    });
-    hideLoader();
-  })
-  .catch(() => {
-    Notiflix.Notify.failure('Not found');
-    hideLoader();
-  });
