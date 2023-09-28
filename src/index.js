@@ -27,17 +27,15 @@ select.addEventListener('change', onSelect);
 
 function onSelect(event) {
     catInfo.classList.add('is-hidden');
-    loader.classList.replace('is-hidden', 'loader');
     select.classList.add('is-hidden');
+    loader.classList.replace('is-hidden', 'loader');
    
-
     const breedId = event.currentTarget.value;
     fetchCatByBreed(breedId)
     .then(data => {
         loader.classList.replace('loader', 'is-hidden');
         select.classList.remove('is-hidden');
         const { url, breeds } = data[0];
-        
         catInfo.innerHTML = `<div class=""><img class="cat" src="${url}" alt="${breeds[0].name}" width="600"></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:</b> ${breeds[0].temperament}</p></div>`
         catInfo.classList.remove('is-hidden');
     })
@@ -50,5 +48,3 @@ function onError(error) {
 
     Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page or select another cat breed!');
 };
-   
-
