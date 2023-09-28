@@ -23,9 +23,9 @@ fetchBreeds()
     })
 .catch(onError);
 
-select.addEventListener('change', onSelectBreed);
+select.addEventListener('change', onSelect);
 
-function onSelectBreed(event) {
+function onSelect(event) {
     catInfo.classList.add('is-hidden');
     loader.classList.replace('is-hidden', 'loader');
     select.classList.add('is-hidden');
